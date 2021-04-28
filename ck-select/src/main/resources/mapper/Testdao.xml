@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fiveonebsi.dao.Testdao">
+    <insert id="save" parameterType="com.fiveonebsi.entity.TaskEntity">
+        INSERT INTO  kkx_sbd.tj_task
+        (RWMC,IDS,SJZZDW,TJFL,STARTTIME,ENDTIME,XLJSFF,ZHDQHJGJS,TJSB,ZHDQJSSX,DYDJ,TASKID)
+        VALUES
+        (#{rwmc},#{ids},#{sjzzdw},#{tjfl},#{startTime},#{endTime},#{xljsff},#{zhdqhjgjs},#{tjsb},#{zhdqjssx},#{dydj},#{taskId})
+    </insert>
+    <select id="all_count" resultType="com.fiveonebsi.entity.Entity">
+        SELECT
+         *
+        from  kkx_sbd.zc_yx_all
+        where SBLX='A' and QSSJ is not null
+    </select>
+    <select id="demo"  resultType="com.fiveonebsi.entity.Entity">
+        SELECT
+         *
+        from  kkx_sbd.zc_yx_all
+        <where>
+            <if test="ids!=null and ids.size()>0">
+                <foreach collection="ids" item="item"  separator="or">
+                    WZDWBM LIKE CONCAT('',#{item},'%')
+                </foreach>
+            </if>
+<!--         and QSSJ is not null    <if test="ids!=null and ids.size>0">-->
+<!--               -->
+<!--                <foreach collection="ids" item="item" open="(" close=")" separator=",">-->
+<!--                    #{item}-->
+<!--                </foreach>-->
+<!--            </if>-->
+            <if test="dydjs!=null and dydjs.size()>0">
+             and   DYDJ IN
+                <foreach collection="dydjs" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            and not (
+            (TCRQ is not null and TCRQ &lt;= #{tjqssj}) or
+            ZCRQ &gt;= #{tjzzsj} or
+            (TCRQ is null and TUIYIRQ is not null and TUIYIRQ &lt;= #{tjqssj})
+            )
+<!--            <if test="sjzzdw!=null and sjzzdw!=''">-->
+<!--             and  SJZZDW=#{sjzzdw}-->
+<!--            </if>-->
+
+            <if test="sblx!=null and sblx.size()>0">
+              and  SBLX in
+                <foreach collection="sblx" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="getById" resultType="com.fiveonebsi.entity.TaskEntity">
+        select * from kkx_sbd.tj_task where TASKID=#{taskId}
+    </select>
+    <select id="page" resultType="com.fiveonebsi.entity.TaskEntity">
+          select * from kkx_sbd.tj_task
+    </select>
+
+</mapper>

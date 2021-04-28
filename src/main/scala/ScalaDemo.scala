@@ -1,8 +1,9 @@
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.execution.datasources.jdbc.JDBCOptions
 import org.apache.spark.sql.{SaveMode, SparkSession}
-
 import java.util.Properties
+
+import org.apache.spark.SparkConf
 
 object ScalaDemo extends Logging {
 
@@ -14,14 +15,17 @@ object ScalaDemo extends Logging {
   def main(args: Array[String]): Unit = {
 
     // 初始化Spark环境
+
+    val sparkConf = new SparkConf().setMaster("local[*]")
+
     val spark = SparkSession
       .builder()
+      .config(sparkConf)
       .appName(getClass.getName)
       .enableHiveSupport()
       .getOrCreate()
 
     import spark.implicits._
-    import spark.sql
 
     logInfo("参数示例: " + args(0))
 
@@ -56,10 +60,14 @@ object ScalaDemo extends Logging {
       .selectExpr("zcjkxl.id as id", "zcjkxl.remark as remark", "zcjkxl.jcdm as jcdm", "zcjkxl.jcmc as jcmc",
         "yxjkxl.remark as yxremark", "yxjkxl.zyqssj as zyqssj", "yxjkxl.zyqbysj as zyqbysj",
         "yxjkxl.zyzzsj as zyzzsj", "yxjkxl.zycxsj as zycxsj", "yxjkxl.zzsj as zzsj")
-    jkxlDf.show
+
+     jkxlDf.show()
 
     // clickhouse中创建表
-    // CREATE TABLE kkx_sbd.jkxl ( `id` String, `remark` Nullable(String), `jcdm` String, `jcmc` String, `yxremark` Nullable(String), zyqssj Nullable(DateTime), zyqbysj Nullable(Float32), zyzzsj Nullable(DateTime), zycxsj Nullable(Float32), zzsj Nullable(DateTime) ) ENGINE = MergeTree PRIMARY KEY id ORDER BY (id, jcdm, jcmc)
+    // CREATE TABLE kkx_sbd.jkxl ( `id` String, `remark` Nullable(String), `jcdm` String,
+    // `jcmc` String, `yxremark` Nullable(String), zyqssj Nullable(DateTime),
+    // zyqbysj Nullable(Float32), zyzzsj Nullable(DateTime), zycxsj Nullable(Float32), zzsj Nullable(DateTime) )
+    // ENGINE = MergeTree PRIMARY KEY id ORDER BY (id, jcdm, jcmc)
 
     jkxlDf.write.mode(SaveMode.Append)
       .option(JDBCOptions.JDBC_BATCH_INSERT_SIZE, 100000)

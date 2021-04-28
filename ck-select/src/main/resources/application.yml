@@ -1,0 +1,9 @@
+#clickhouse:
+#  address: jdbc:clickhouse://192.168.6.250:8123
+#  username:
+#  password:
+#  db: kkx_sbd
+#  socketTimeout: 600000
+logging:
+  level:
+    com.fiveonebsi.mapper: debug
