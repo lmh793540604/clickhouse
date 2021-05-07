@@ -13,7 +13,7 @@ public interface Testdao {
 
     //测试查询
     public List<Entity> all_count();
-    public List<Entity> demo(@Param("ids") List<String> ids, @Param("tjqssj") Date tjqssj, @Param("tjzzsj") Date tjzzsj, @Param("sjzzdw") String sjzzdw, @Param("xljsfs") String xljsfs, @Param("zhdqhjgjs") String zhdqhjgjs, @Param("sblx") List<String> sblx, @Param("dydjs") List<String> dydjs, @Param("zhdqjssx") List<String> zhdqjssx);
+    public List<Entity> demo(@Param("ids") List<String> ids, @Param("tjqssj") Date tjqssj, @Param("tjzzsj") Date tjzzsj, @Param("sjzzdw") String sjzzdw, @Param("xljsfs") String xljsfs, @Param("zhdqhjgjs") String zhdqhjgjs, @Param("sblx") List<String> sblx, @Param("dydjs") List<String> dydjs, @Param("zhdqjssx") List<String> zhdqjssx,@Param("pageSize")Integer pageSize,@Param("pageNum")Integer pageNum);
 
     void save(TaskEntity taskEntity);
 

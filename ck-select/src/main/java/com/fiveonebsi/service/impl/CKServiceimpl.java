@@ -41,7 +41,7 @@ public class CKServiceimpl implements CKService {
     @Override
     public List<TjDtjg> demo(TaskVo taskVo) throws ParseException {
         // 拆分计算
-        List<Entity> demo = testdao.demo(taskVo.getParseIds(),taskVo.getStartTime(),taskVo.getEndTime(),null,null,null,taskVo.getTjsb(),taskVo.getDydj(),null);
+        List<Entity> demo = testdao.demo(taskVo.getParseIds(),taskVo.getStartTime(),taskVo.getEndTime(),null,null,null,taskVo.getTjsb(),taskVo.getDydj(),null,taskVo.getPageSize(),taskVo.getPageNum());
         List tjDtjgs=new ArrayList<>();
         Map<String, List<Entity>> collect = demo.stream().collect(Collectors.groupingBy(Entity::getId));
         Set<String> strings = collect.keySet();
@@ -53,11 +53,9 @@ public class CKServiceimpl implements CKService {
             if(entities!=null&&entities.size()>0){
                 Entity entity = entities.get(0);
                 Date date = Optional.ofNullable(entity.getTcrq()).orElse(entity.getTuiyirq());
-                TjDtjg tjDtjg=new TjDtjg();
-                tjDtjg= assemblyJg(entities, taskVo.getTjlx(), entity.getZcrq(), date, taskVo.getStartTime(), taskVo.getEndTime());
+                TjDtjg tjDtjg= assemblyJg(entities, taskVo.getTjlx(), entity.getZcrq(), date, taskVo.getStartTime(), taskVo.getEndTime());
                 tjDtjg.setAzwzdm(entity.getAzwzdm());
                 tjDtjg.setAzwzmc(entity.getAzwzmc());
-//                tjDtjg.setSblb(taskVo.getSblx());
                 tjDtjg.setJcdm(entity.getJcdm());
                 tjDtjg.setJcmc(entity.getJcmc());
                 tjDtjg.setXsdwdm(entity.getXsdwdm());
@@ -77,7 +75,13 @@ public class CKServiceimpl implements CKService {
                 tjDtjg.setSbId(entity.getSbId());
                 tjDtjg.setQssj(taskVo.getStartTime());
                 tjDtjg.setZzsj(taskVo.getEndTime());
-                tjDtjg.setSblb(taskVo.getTjfl());
+                tjDtjg.setSblb(entity.getSblx());
+                if ((Constant.JKXL.getValue().equals(entity.getSblx())||Constant.DLXL.equals(entity.getSblx()))&&"0".equals(taskVo.getXljsff())) {
+                    BigDecimal ratio = BigDecimal.valueOf(entity.getXlcd()==null?entity.getXlcd():0)
+                            .divide(BigDecimal.valueOf(100),9, RoundingMode.HALF_UP);
+                    //只改设备台年，不改统计期间小时
+                    tjDtjg.setSbtns(ratio.multiply(tjDtjg.getSbtns()));
+                }
                 tjDtjgs.add(tjDtjg);
 
 //                if(Strings.isNotBlank(entities.get(0).getId())){

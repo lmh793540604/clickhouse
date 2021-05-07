@@ -59,7 +59,9 @@ public class PublisherController{
         TaskEntity byId = ckService.getById(taskId);
         TaskVo taskVo = new TaskVo();
         byId.getTaskVo(taskVo,byId);
-        PageHelper.startPage(pageCurrent,pageSize);
+//        PageHelper.startPage(pageCurrent,pageSize);
+        taskVo.setPageSize(pageSize);
+        taskVo.setPageNum(pageCurrent);
         return ckService.demo(taskVo);
     }
 

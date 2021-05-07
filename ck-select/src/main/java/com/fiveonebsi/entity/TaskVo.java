@@ -77,6 +77,10 @@ public class TaskVo {
 
     private List<String> parseIds;
 
+    private Integer pageSize;
+
+    private Integer pageNum;
+
     public void getTaskEntity(TaskVo  taskVo,TaskEntity taskEntity) {
         taskEntity.setDydj(StringUtils.join(taskVo.getDydj(),","));
         taskEntity.setEndTime(taskVo.getEndTime());

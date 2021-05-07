@@ -43,13 +43,24 @@
 <!--            <if test="sjzzdw!=null and sjzzdw!=''">-->
 <!--             and  SJZZDW=#{sjzzdw}-->
 <!--            </if>-->
-
-            <if test="sblx!=null and sblx.size()>0">
-              and  SBLX in
-                <foreach collection="sblx" item="item" open="(" close=")" separator=",">
-                    #{item}
-                </foreach>
-            </if>
+        </where>
+        and ID in (
+        select ID  from  kkx_sbd.zc_yx_all
+        <where>
+        <if test="sblx!=null and sblx.size()>0">
+            and  SBLX in
+            <foreach collection="sblx" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ids!=null and ids.size()>0">
+            <foreach collection="ids" item="item"  separator="or">
+             and   WZDWBM LIKE CONCAT('',#{item},'%')
+            </foreach>
+        </if>
+        group by ID
+        limit  ${(pageNum-1)*pageSize},${pageSize}
+        )
         </where>
     </select>
     <select id="getById" resultType="com.fiveonebsi.entity.TaskEntity">

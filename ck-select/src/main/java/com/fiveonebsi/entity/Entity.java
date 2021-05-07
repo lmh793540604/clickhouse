@@ -184,7 +184,7 @@ public class Entity {
 
     private String xhggId;
 
-    private String xlcd;
+    private Double xlcd;
 
     private String xldm;
 
